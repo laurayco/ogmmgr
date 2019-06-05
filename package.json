@@ -10,5 +10,9 @@
     "overwatch"
   ],
   "author": "Lauren Connors",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "typescript": "^3.5.1",
+    "yaml": "^1.6.0"
+  }
 }
