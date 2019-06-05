@@ -9,9 +9,16 @@
   "keywords": [
     "overwatch"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/laurayco/ogmmgr.git"
+  },
   "author": "Lauren Connors",
   "license": "ISC",
   "dependencies": {
+    "@types/prop-types": "^15.7.1",
+    "@types/yaml": "^1.0.2",
+    "prop-types": "^15.7.2",
     "typescript": "^3.5.1",
     "yaml": "^1.6.0"
   }
