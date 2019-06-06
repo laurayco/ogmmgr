@@ -69,8 +69,15 @@ Promise<ModeData[]> {
 
     const contributor_entries = await Promise.all(
         contributor_dirs.map(async contributor=>{
-            const mode_dirs = await utils.sub_directories(path.join(root_dir, contributor));
-            return Promise.all(mode_dirs.map(mdir=>build_hinted_mode(root_dir, contributor, mdir)));
+            const mode_dirs = await utils.sub_directories(path.join(
+                root_dir,
+                contributor
+            ));
+            return Promise.all(mode_dirs.map(mdir=>build_hinted_mode(
+                root_dir,
+                contributor,
+                mdir
+            )));
         })
     );
     
