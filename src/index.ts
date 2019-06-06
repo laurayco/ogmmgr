@@ -24,6 +24,11 @@ interface ModeData {
     index: ModeIndex;
 }
 
+interface UserMeta {
+    author: AuthorInfo;
+    game_modes: ModeIndex[];
+}
+
 async function build_hinted_mode(
     root_dir: string,
     contributor_dir: string,
@@ -131,12 +136,27 @@ Promise<ModeData[]> {
     return utils.flatten(contributor_entries);
 }
 
+async function render_static_pages() {
+
+}
+
+async function render_user_pages(modes: ModeData[]) {
+
+}
+
+async function render_mode_pages(modes: ModeData[]) {
+
+}
+
 async function entry_point() {
     const root_dir = utils.actual_filename(CONSTS.ROOT_DIRECTORY);
     const mode_data = await get_game_modes(root_dir);
-    for(let mode of mode_data) {
-        console.log(yaml.stringify(mode.index));
-    }
+
+    return Promise.all([
+        render_static_pages(),
+        render_user_pages(mode_data),
+        render_mode_pages(mode_data)
+    ]);
 }
 
 entry_point();
