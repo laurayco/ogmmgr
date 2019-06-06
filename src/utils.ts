@@ -10,9 +10,19 @@ export const readdir = promisify(fs.readdir);
 export const fileExists = promisify(fs.exists);
 export const isFile = promisify(fs.readdir)
 
+// npm package imports
 import * as checkPropTypes from 'check-prop-types';
-
 import { ValidationMap } from "prop-types";
+import * as marked_func from "marked";
+
+export const marked = async (src: string, opts?: marked_func.MarkedOptions) : Promise<string>=>{
+    return new Promise((resolve,reject)=>{
+        marked_func(src, opts, (err,result)=>{
+            if(err) reject(err);
+            else resolve(result);
+        });
+    });
+};
 
 // project local imports
 import * as CONSTS from "./consts.json";
