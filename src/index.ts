@@ -3,9 +3,6 @@ import * as path from "path";
 
 // npm imports
 import * as yaml from "yaml";
-import * as PropTypes from "prop-types";
-import * as checkPropTypes from 'check-prop-types';
-
 
 // project-local imports
 import models, {
@@ -106,21 +103,6 @@ async function entry_point() {
     const mode_data = await get_game_modes(root_dir);
     for(let mode of mode_data) {
         console.log(mode);
-    }
-
-    console.log("CHECKING PROP TYPE");
-    const result = checkPropTypes({
-        filename: ModelPropTypes.REPO_FILENAME
-        }, {
-            filename: "",
-        },
-        "prop",
-        "SimpleDataConstruct"
-    );
-    if(result!==undefined) {
-        console.log(result);
-    } else {
-        console.log("ALL GOOD");
     }
 }
 
