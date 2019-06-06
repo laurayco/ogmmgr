@@ -10,8 +10,25 @@ export const readdir = promisify(fs.readdir);
 export const fileExists = promisify(fs.exists);
 export const isFile = promisify(fs.readdir)
 
+import * as checkPropTypes from 'check-prop-types';
+import { ValidationMap } from "prop-types";
+
 // project local imports
 import * as CONSTS from "./consts.json";
+
+export const test_types = <T=any>(
+    tmaps: ValidationMap<T>,
+    val: T,
+    ctx: string,
+    component: string
+)=>{
+    const comparison_message = checkPropTypes(tmaps, val, ctx, component);
+    if(comparison_message===undefined) {
+        return true;
+    } else {
+        throw new Error(comparison_message);
+    }
+};
 
 export const actual_filename = repo_filename=>path.resolve(repo_filename);
 
