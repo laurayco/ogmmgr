@@ -50,6 +50,7 @@ Promise<ModeData> {
         }
     };
 
+    // create index container.
     const does_file_exist = await utils.fileExists(returned_value.filename);
     if(does_file_exist) {
         // an existing entry already exists.
@@ -70,6 +71,27 @@ Promise<ModeData> {
             console.warn(`Error parsing YAML for ${returned_value.filename}:`,ex);
         }
     }
+
+    const ignored_files = ["index.yml", "description.md"];
+    const ignored_extensions = [".yml", ".md"];
+    // build entries from files in directory.
+    // filename should be: <GAME CODE>.owgm
+    const mode_files = (await utils.directory_files(path.join(root_dir,contributor_dir,mode_dir))).map(fname=>{
+        return path.parse(path.join(root_dir, contributor_dir, mode_dir,fname));
+    }).filter(fname=>!(ignored_files.includes(fname.base)||ignored_extensions.includes(fname.ext)));
+
+    returned_value.index.history = await Promise.all(mode_files.map(async fname=>{
+        const share_code = fname.name;
+        const stat = await utils.fileStat(path.format(fname));
+        const published = stat.mtime;
+        return {
+            share_code,
+            published: published.toUTCString()
+        };
+    }));
+
+    // write the new index to the file.
+    await utils.writeFile(returned_value.filename, yaml.stringify(returned_value.index));
 
     return returned_value;
 }
@@ -99,10 +121,9 @@ Promise<ModeData[]> {
 
 async function entry_point() {
     const root_dir = utils.actual_filename(CONSTS.ROOT_DIRECTORY);
-    console.log(root_dir);
     const mode_data = await get_game_modes(root_dir);
     for(let mode of mode_data) {
-        console.log(mode);
+        console.log(yaml.stringify(mode.index));
     }
 }
 
