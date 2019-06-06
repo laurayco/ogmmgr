@@ -1,9 +1,20 @@
 // nodejs imports
 import * as path from "path";
+
+// npm imports
 import * as yaml from "yaml";
+import * as PropTypes from "prop-types";
+import checkPropTypes from 'check-prop-types';
+
 
 // project-local imports
-import { ModeEntry, ModeIndex, AuthorInfo } from "./models";
+import models, {
+    ModeEntry,
+    ModeIndex,
+    AuthorInfo,
+    PropTypes as ModelPropTypes
+} from "./models";
+
 import * as CONSTS from "./consts.json";
 import * as utils from "./utils";
 
@@ -56,7 +67,7 @@ Promise<ModeData> {
                 // (ie: not a number, null, or string value)
                 Object.assign(returned_value.index, file_value);
             } else {
-                console.warn(`Invalid value for ${returned_value.filename}`, file_value);
+                console.warn(`Invalid value for ${returned_value.filename}:`, file_value);
             }
         } catch (ex) {
             console.warn(`Error parsing YAML for ${returned_value.filename}:`,ex);
@@ -95,6 +106,21 @@ async function entry_point() {
     const mode_data = await get_game_modes(root_dir);
     for(let mode of mode_data) {
         console.log(mode);
+    }
+
+    console.log("CHECKING PROP TYPE");
+    const result = checkPropTypes({
+        filename: ModelPropTypes.REPO_FILENAME
+        }, {
+            filename: "",
+        },
+        "prop",
+        "SimpleDataConstruct"
+    );
+    if(result instanceof Error) {
+        console.log(result);
+    } else {
+        console.log("ALL GOOD");
     }
 }
 
