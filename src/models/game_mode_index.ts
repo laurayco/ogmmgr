@@ -30,6 +30,7 @@ PropTypesInterface<AuthorInformation> = {
 };
 
 export interface ModeEntry {
+    share_code: string; // what the game client gives for you to share.
     published: DATE_STRING; // when this entry was published.
     preview_video: URL; // used on page for this entry.
     preview_image: URL; // used to show thumbnails.
@@ -37,6 +38,7 @@ export interface ModeEntry {
 
 export const ModeEntryProps :
 PropTypesInterface<ModeEntry> = {
+    share_code: PropTypes.string,
     published: PropTypes.string,
     preview_video: PropTypes.string,
     preview_image: PropTypes.string
