@@ -1,4 +1,4 @@
-import PropTypes, { string } from "prop-types";
+import * as PropTypes from "prop-types";
 
 /*
     just interface declarations for the data needed to
