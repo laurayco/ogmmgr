@@ -16,6 +16,7 @@
   "author": "Lauren Connors",
   "license": "ISC",
   "dependencies": {
+    "@types/node": "^12.0.5",
     "@types/prop-types": "^15.7.1",
     "@types/yaml": "^1.0.2",
     "prop-types": "^15.7.2",
