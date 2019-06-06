@@ -11,6 +11,7 @@ export const fileExists = promisify(fs.exists);
 export const isFile = promisify(fs.readdir)
 
 import * as checkPropTypes from 'check-prop-types';
+
 import { ValidationMap } from "prop-types";
 
 // project local imports
@@ -22,7 +23,7 @@ export const test_types = <T=any>(
     ctx: string,
     component: string
 )=>{
-    const comparison_message = checkPropTypes(tmaps, val, ctx, component);
+    const comparison_message = checkPropTypes.assertPropTypes(tmaps, val, ctx, component);
     if(comparison_message===undefined) {
         return true;
     } else {
