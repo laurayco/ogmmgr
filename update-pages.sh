@@ -15,4 +15,10 @@ git pull
 # step five: move everything from www to root folder.
 pushd www
 mv *.* ..
-popd www
+popd
+
+# step six: push updates to github
+git push
+
+# step seven: checkout master again.
+git checkout master
