@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "debug": "node --inspect-brk src/index.js"
   },
   "keywords": [
     "overwatch"
