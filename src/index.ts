@@ -1,14 +1,6 @@
 // nodejs imports
-import * as fs from "fs";
 import * as path from "path";
-import { promisify } from "util";
-
-const readFile = promisify(fs.readFile);
-const writeFile = promisify(fs.writeFile);
-const fileStat = promisify(fs.stat);
-const readdir = promisify(fs.readdir);
-const fileExists = promisify(fs.exists);
-const isFile = promisify(fs.readdir)
+import * as yaml from "yaml";
 
 // project-local imports
 import { ModeEntry, ModeIndex, AuthorInfo } from "./models";
@@ -50,12 +42,25 @@ Promise<ModeData> {
         }
     };
 
-    const does_file_exist = await fileExists(returned_value.filename);
+    const does_file_exist = await utils.fileExists(returned_value.filename);
     if(does_file_exist) {
         // an existing entry already exists.
         // in this case we only update the
         // necessary information (do not
         // overwrite constant data. )
+        const file_contents = await utils.readFile(returned_value.filename);
+        try {
+            const file_value = yaml.parse(file_contents.toString('utf8'));
+            if(!Array.isArray(file_value)&&typeof file_value==="object") {
+                // we know it's an object and not an array
+                // (ie: not a number, null, or string value)
+                Object.assign(returned_value.index, file_value);
+            } else {
+                console.warn(`Invalid value for ${returned_value.filename}`, file_value);
+            }
+        } catch (ex) {
+            console.warn(`Error parsing YAML for ${returned_value.filename}:`,ex);
+        }
     }
 
     return returned_value;
