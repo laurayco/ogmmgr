@@ -4,7 +4,7 @@ import * as path from "path";
 // npm imports
 import * as yaml from "yaml";
 import * as PropTypes from "prop-types";
-import checkPropTypes from 'check-prop-types';
+import * as checkPropTypes from 'check-prop-types';
 
 
 // project-local imports
@@ -117,7 +117,7 @@ async function entry_point() {
         "prop",
         "SimpleDataConstruct"
     );
-    if(result instanceof Error) {
+    if(result!==undefined) {
         console.log(result);
     } else {
         console.log("ALL GOOD");
