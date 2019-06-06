@@ -3,6 +3,7 @@ import * as path from "path";
 
 // npm imports
 import * as yaml from "yaml";
+import * as pug from "pug";
 
 // project-local imports
 import models, {
@@ -136,8 +137,44 @@ Promise<ModeData[]> {
     return utils.flatten(contributor_entries);
 }
 
-async function render_static_pages() {
+const page_template = pug.compileFile(utils.actual_filename("./src/templates/page.pug"));
+const infer_human_name = (content: string)=>content.
+    replace(/[_ ]+/g," ").
+    split(" ").
+    map(chunk=>`${chunk.slice(0,1).toLocaleUpperCase()}${chunk.slice(1).toLocaleLowerCase()}`).
+    join(" ");
 
+async function render_page_file(filename: string) {
+    const page_source_name = path.parse(filename);
+    const page_name = infer_human_name(page_source_name.name);
+    const file_contents = await utils.readFile(path.join(utils.actual_filename("./src/pages"),filename));
+    const markdown_result = await utils.marked(file_contents.toString('utf-8'), CONSTS.MARKDOWN_OPTIONS);
+    const html_filename = `${page_source_name.name}.html`;
+    const html_content = page_template({
+        name: page_name,
+        content: markdown_result,
+        path: `/page/${html_filename}`,
+        root_url: CONSTS.ROOT_URL
+    });
+    await utils.writeFile(path.join(utils.actual_filename(CONSTS.HTML_OUTPUT_DIRECTORY),"page",html_filename), html_content);
+}
+
+async function render_static_pages() {
+    const page_files = await utils.directory_files(utils.actual_filename("./src/pages"));
+    await Promise.all(page_files.map(render_page_file));
+    const index_content = await utils.marked(
+        (await utils.readFile(
+            path.join(utils.actual_filename("./src/pages/home.md"))
+        )).toString('utf-8'),
+        CONSTS.MARKDOWN_OPTIONS
+    );
+    const index_html = page_template({
+        name: "Home",
+        content: index_content,
+        path: `/`,
+        root_url: CONSTS.ROOT_URL
+    });
+    await utils.writeFile(path.join(utils.actual_filename(CONSTS.HTML_OUTPUT_DIRECTORY),"index.html"), index_html);
 }
 
 async function render_user_pages(modes: ModeData[]) {
