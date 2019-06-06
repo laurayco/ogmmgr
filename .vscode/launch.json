@@ -9,7 +9,7 @@
             "request": "attach",
             "name": "Attach To Instance",
             "outFiles": [
-                "${workspaceFolder}/src/*.js"
+                "${workspaceFolder}/bin/*.js"
             ]
         }
     ]

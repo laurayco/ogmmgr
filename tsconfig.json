@@ -4,7 +4,8 @@
         "moduleResolution": "node",
         "module": "commonjs",
         "target": "es2017",
-        "sourceMap": true
+        "sourceMap": true,
+        "outDir": "bin"
     },
     "exclude": [
         "node_modules"
