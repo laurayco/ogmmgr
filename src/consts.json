@@ -1,5 +1,5 @@
 {
-    "MODE_INDEX_FILENAME": "index.yaml",
+    "MODE_INDEX_FILENAME": "index.yml",
     "ROOT_DIRECTORY": "./data/modes",
     "DEFAULT_DESCRIPTION_FILENAME": "description.md"
 }
