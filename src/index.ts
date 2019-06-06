@@ -90,6 +90,18 @@ Promise<ModeData> {
         };
     }));
 
+    returned_value.index.history.sort((a,b)=>{
+        const adate = new Date(a.published);
+        const bdate = new Date(b.published);
+        if(adate>bdate) {
+            return 1;
+        } if(bdate>adate) {
+            return -1;
+        } {
+            return 0;
+        }
+    });
+
     // write the new index to the file.
     await utils.writeFile(returned_value.filename, yaml.stringify(returned_value.index));
 
