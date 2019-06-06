@@ -14,7 +14,7 @@ git pull
 
 # step five: move everything from www to root folder.
 pushd www
-mv *.* ..
+mv * ..
 popd
 
 # step six: push updates to github
