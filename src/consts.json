@@ -1,5 +1,6 @@
 {
-    "MODE_INDEX_FILENAME": "index.yml",
     "ROOT_DIRECTORY": "./data/modes",
-    "DEFAULT_DESCRIPTION_FILENAME": "description.md"
+    "HTML_OUTPUT_DIRECTORY": "./www",
+    "MODE_INDEX_FILENAME": "./index.yml",
+    "DEFAULT_DESCRIPTION_FILENAME": "./description.md"
 }
