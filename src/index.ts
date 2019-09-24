@@ -89,7 +89,7 @@ Promise<ModeData> {
     returned_value.index.history = await Promise.all(mode_files.map(async fname=>{
         const share_code = fname.name;
         const stat = await utils.fileStat(path.format(fname));
-        const published = stat.mtime;
+        const published = stat.ctime;
         return {
             share_code,
             published: published.toUTCString()
