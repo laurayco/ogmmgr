@@ -15,6 +15,8 @@ import models, {
 
 import * as CONSTS from "./consts.json";
 import * as utils from "./utils";
+import { promisify } from "util";
+import { mkdir } from "fs";
 
 /*
     this file is the entry point to build the website.
@@ -156,6 +158,11 @@ async function render_page_file(filename: string) {
         path: `/page/${html_filename}`,
         root_url: CONSTS.ROOT_URL
     });
+    try {
+        await promisify(mkdir)(path.join(utils.actual_filename(CONSTS.HTML_OUTPUT_DIRECTORY),"page"));
+    } catch(ex) {
+        // who cares?
+    }
     await utils.writeFile(path.join(utils.actual_filename(CONSTS.HTML_OUTPUT_DIRECTORY),"page",html_filename), html_content);
 }
 
@@ -188,6 +195,14 @@ async function render_mode_pages(modes: ModeData[]) {
 async function entry_point() {
     const root_dir = utils.actual_filename(CONSTS.ROOT_DIRECTORY);
     const mode_data = await get_game_modes(root_dir);
+
+    try {
+        await promisify(mkdir)(CONSTS.HTML_OUTPUT_DIRECTORY, {
+            recursive: true
+        })
+    } catch(ex) {
+        // ignore - this just means directory already exists.
+    }
 
     return Promise.all([
         render_static_pages(),
