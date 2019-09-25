@@ -1,0 +1,30 @@
+on:
+  push:
+    branches:
+      - master
+
+name: CI Workflow
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@master
+        with:
+          node-version: 10.x 
+      - run: npm ci
+        name: install dependencies
+      - run: npm run build
+        name: run build script
+      - run: npm test
+        name: run tests
+      - run: npm start
+        name: run program
+      - name: deploy output
+        uses: peaceiris/actions-gh-pages@v2.4.0
+        env:
+          ACTIONS_DEPLOY_KEY: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+          PUBLISH_BRANCH: gh-pages
+          PUBLISH_DIR: ./www
