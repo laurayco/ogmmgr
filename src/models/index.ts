@@ -1,5 +1,5 @@
 import { AuthorInformation, AuthorInformationProps } from "./author";
-import { ModeEntry, ModeEntryProps } from "./mode_entry";
+import { ModeEntry, ModeEntryProps } from "./mode";
 import { ModeIndex, ModeIndexProps } from "./mode_index";
 
 export type AuthorInfo = AuthorInformation;

@@ -1,7 +1,7 @@
 import * as PropTypes from "prop-types";
 import { PropTypesInterface, DATE_STRING, REPO_FILENAME, URL_PROP } from "./utils";
 import { AuthorInformation, AuthorInformationProps } from "./author";
-import { ModeEntry, ModeEntryProps } from "./mode_entry";
+import { ModeEntry, ModeEntryProps } from "./mode";
 
 export interface ModeIndex {
     // name of the game mode (hint this from the folder if not specified.)
