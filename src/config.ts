@@ -3,7 +3,7 @@ import { read_yaml } from "./data/utils";
 const CONFIG_FN = process.env["CONFIG_FILE"] || "config.yml";
 
 interface CONFIG {
-    timestamp: number;
+    data_directory: string;
 };
 
 type PromiseWrapped<T> = {
@@ -13,7 +13,7 @@ type PromiseWrapped<T> = {
 const load_config = async function() {
     const calculate_config = async()=>{
         console.log("CALCULATING CONFIG",new Date());
-        const file_config = await read_yaml(CONFIG_FN) as Promise<CONFIG>;
+        const file_config = await read_yaml(CONFIG_FN) as CONFIG;
         const env_config = {};
         return Object.assign({}, env_config, file_config);
     }
