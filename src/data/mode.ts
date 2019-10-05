@@ -22,3 +22,10 @@ const load_mode_entries = async (author: string, slug: string) => {
         return { share_code, code, published } as ModeEntry;
     }));
 }
+
+const load_mode_description = async (author: string, slug: string) => {
+    const data_directory = await CONFIG.data_directory;
+    const mode_dname = join(data_directory, "modes", author, slug);
+    const mode_desc_fn = join(mode_dname, "description.md");
+    
+};
