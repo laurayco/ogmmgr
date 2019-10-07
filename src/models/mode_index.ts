@@ -9,7 +9,7 @@ export interface ModeIndex {
     // information of the author (hint this from git information if not provided.)
     author: AuthorInformation;
     // should point to a file with a markdown description.
-    description: REPO_FILENAME;
+    description: string;
     // used on page for this entry.
     preview_video?: URL;
     // used to show thumbnails.
