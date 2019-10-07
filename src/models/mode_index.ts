@@ -7,7 +7,7 @@ export interface ModeIndex {
     // name of the game mode (hint this from the folder if not specified.)
     name: string;
     // information of the author (hint this from git information if not provided.)
-    author: AuthorInformation;
+    author: string;
     // should point to a file with a markdown description.
     description: string;
     // used on page for this entry.
