@@ -6,14 +6,46 @@ import config from "./config";
 import { renderToString } from "react-dom/server";
 import * as React from "react";
 import Application, { DataBank } from "./components";
+import { promisify } from "util";
+import { writeFile, mkdir } from "fs";
+import { parse } from "path";
+
+async function ensure_directory(dirname: string) {
+    try {
+        console.log("Creating directory", dirname);
+        await promisify(mkdir)(dirname, {
+            recursive: true
+        });
+    } catch(ex) {
+        // ignore
+        console.error("ERROR CREATING DIRECTORY", ex);
+    }
+}
+
+async function path_to_fn(path: string, extension: string) {
+    path = path.replace(/^\/+/,""); //remove leading /'s
+    path = path.replace(/\/+$/,""); //remove trailing /'s
+    const output_directory = await config.output_directory;
+    return `${output_directory}/${path}.${extension}`;
+}
 
 async function prerender_page(path: string, databank: DataBank) {
     const dom_replacement = renderToString(React.createElement(Application, { databank }));
-    
+    const fn = await path_to_fn(path,"html");
+    const dirname = parse(fn).dir;
+    await ensure_directory(dirname);
+    await promisify(writeFile)(fn, dom_replacement);
 }
 
 async function render_mode(author: string, mode: string) {
     const mode_index = await load_mode(author, mode);
+    prerender_page(`/a/${author}/m/${mode}`, {
+        modes: {
+            [author]: {
+                [mode]: mode_index
+            }
+        }
+    })
 }
 
 async function render_author(author: string) {
@@ -26,9 +58,11 @@ async function render_author(author: string) {
 
 async function main() {
     const DATA_DIRECTORY = await config.data_directory;
-    const list_of_author_names = await read_directory(DATA_DIRECTORY);
+    const list_of_author_names = await read_directory(DATA_DIRECTORY,{
+        withFileTypes: true,
+    });
     // render each author.
-    await Promise.all(list_of_author_names.map(render_author));
+    await Promise.all(list_of_author_names.filter(fn=>fn.isDirectory()).map(fn=>render_author(fn.name)));
 }
 
 main();
