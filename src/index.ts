@@ -1,14 +1,16 @@
+import { promisify } from "util";
+import { writeFile, mkdir } from "fs";
+import { parse } from "path";
+
+import { renderToString } from "react-dom/server";
+import * as React from "react";
+
 import {} from "./models";
 import load_author from "./data/author";
 import load_mode from "./data/mode";
 import { read_directory } from "./data/utils";
 import config from "./config";
-import { renderToString } from "react-dom/server";
-import * as React from "react";
 import Application, { DataBank } from "./components";
-import { promisify } from "util";
-import { writeFile, mkdir } from "fs";
-import { parse } from "path";
 
 async function ensure_directory(dirname: string) {
     try {
