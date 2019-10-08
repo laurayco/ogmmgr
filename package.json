@@ -8,7 +8,8 @@
     "build": "tsc",
     "start": "node bin/index.js",
     "debug": "node --inspect-brk bin/index.js",
-    "serve": "node bin/server.js"
+    "serve": "node bin/server.js",
+    "postbuild": "(rm -rf bin/templates||true) && cp -r src/templates bin/templates"
   },
   "keywords": [
     "overwatch"
