@@ -5,12 +5,11 @@ import { read_directory } from "./data/utils";
 import config from "./config";
 import { renderToString } from "react-dom/server";
 import * as React from "react";
-
-type DataBank = any;
+import Application, { DataBank } from "./components";
 
 async function prerender_page(path: string, databank: DataBank) {
     const dom_replacement = renderToString(React.createElement(Application, { databank }));
-
+    
 }
 
 async function render_mode(author: string, mode: string) {
