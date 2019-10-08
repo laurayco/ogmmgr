@@ -3,13 +3,11 @@ import { PropTypesInterface, DATE_STRING, REPO_FILENAME, URL_PROP } from "./util
 
 export interface AuthorInformation {
     contributor: string;
-    battlenet_name?: string;
-    battlenet_numbers?: number;
+    battlenet_name?: string[];
 };
 
 export const AuthorInformationProps :
 PropTypesInterface<AuthorInformation> = {
     contributor: PropTypes.string,
-    battlenet_name: PropTypes.string,
-    battlenet_numbers: PropTypes.number
+    battlenet_name: PropTypes.string
 };
