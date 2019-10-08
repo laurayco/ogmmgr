@@ -30,10 +30,13 @@ const load_author_index = async (author_name: string)=>{
     const data_directory = await CONFIG.data_directory;
     const author = await load_author(author_name);
     const author_mode_dir = join(data_directory, author_name);
-    const author_files = await read_directory(author_mode_dir);
+    const author_files = await read_directory(author_mode_dir, {
+        withFileTypes: true
+    });
     const entry_slugs = author_files
-        .filter(fn=>fn!=="index.yml")
-        .map(fn=>parse(fn).name);
+        .filter(fn=>fn.isDirectory())
+        .filter(fn=>fn.name!=="index.yml")
+        .map(fn=>parse(fn.name).name);
     return {
         author,
         modes: entry_slugs
