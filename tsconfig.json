@@ -5,7 +5,8 @@
         "module": "commonjs",
         "target": "es2017",
         "sourceMap": true,
-        "outDir": "bin"
+        "outDir": "bin",
+        "jsx": "react"
     },
     "exclude": [
         "node_modules"
