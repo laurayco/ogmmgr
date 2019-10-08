@@ -5,6 +5,7 @@ const CONFIG_FN = process.env["CONFIG_FILE"] || "config.yml";
 interface CONFIG {
     data_directory: string;
     output_directory: string;
+    page_directory: string;
     port: number;
 };
 
