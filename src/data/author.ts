@@ -34,7 +34,7 @@ const load_author_index = async (author_name: string)=>{
         withFileTypes: true
     });
     const entry_slugs = author_files
-        .filter(fn=>fn.isDirectory())
+        .filter(fn=>fn.isFile())
         .filter(fn=>fn.name!=="index.yml")
         .map(fn=>parse(fn.name).name);
     return {
