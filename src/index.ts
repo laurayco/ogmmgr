@@ -9,7 +9,7 @@ import * as React from "react";
 import {} from "./models";
 import load_author from "./data/author";
 import load_mode from "./data/mode";
-import { read_directory } from "./data/utils";
+import { read_directory, read_text_file } from "./data/utils";
 import config from "./config";
 import Application, { DataBank } from "./components";
 
@@ -17,7 +17,6 @@ const compile_html_page = compileFile(join(__dirname,"templates/index.pug"));
 
 async function ensure_directory(dirname: string) {
     try {
-        console.log("Creating directory", dirname);
         await promisify(mkdir)(dirname, {
             recursive: true
         });
@@ -64,13 +63,31 @@ async function render_author(author: string) {
     await Promise.all(author_index.modes.map(mn=>render_mode(author, mn)));
 }
 
+async function render_page(page: string) {
+    const PAGE_DIRECTORY = await config.page_directory;
+    const page_fn = join(PAGE_DIRECTORY, page);
+    const page_name = parse(page).name;
+    const page_contents = await read_text_file(page_fn);
+    await prerender_page(`/p/${page_name}`,{
+        pages: {
+            [page_name]: page_contents
+        }
+    });
+}
+
 async function main() {
     const DATA_DIRECTORY = await config.data_directory;
+    const PAGE_DIRECTORY = await config.page_directory;
     const list_of_author_names = await read_directory(DATA_DIRECTORY,{
         withFileTypes: true,
     });
     // render each author.
     await Promise.all(list_of_author_names.filter(fn=>fn.isDirectory()).map(fn=>render_author(fn.name)));
+    // render each page
+    const list_of_pages = await read_directory(PAGE_DIRECTORY, {
+        withFileTypes: true
+    });
+    await Promise.all(list_of_pages.filter(fn=>fn.isFile()).map(fn=>render_page(fn.name)));
 }
 
 main();
