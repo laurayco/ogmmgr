@@ -1,8 +1,9 @@
 import { promisify } from "util";
 import { writeFile, mkdir } from "fs";
-import { parse } from "path";
+import { parse, join } from "path";
 
 import { renderToString } from "react-dom/server";
+import { compileFile } from "pug";
 import * as React from "react";
 
 import {} from "./models";
@@ -11,6 +12,8 @@ import load_mode from "./data/mode";
 import { read_directory } from "./data/utils";
 import config from "./config";
 import Application, { DataBank } from "./components";
+
+const compile_html_page = compileFile(join(__dirname,"templates/index.pug"));
 
 async function ensure_directory(dirname: string) {
     try {
@@ -32,11 +35,14 @@ async function path_to_fn(path: string, extension: string) {
 }
 
 async function prerender_page(path: string, databank: DataBank) {
-    const dom_replacement = renderToString(React.createElement(Application, { databank }));
+    const content = renderToString(React.createElement(Application, { databank }));
     const fn = await path_to_fn(path,"html");
     const dirname = parse(fn).dir;
     await ensure_directory(dirname);
-    await promisify(writeFile)(fn, dom_replacement);
+    const html_output = compile_html_page({
+        content
+    })
+    await promisify(writeFile)(fn, html_output);
 }
 
 async function render_mode(author: string, mode: string) {
