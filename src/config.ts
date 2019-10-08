@@ -4,6 +4,8 @@ const CONFIG_FN = process.env["CONFIG_FILE"] || "config.yml";
 
 interface CONFIG {
     data_directory: string;
+    output_directory: string;
+    port: number;
 };
 
 type PromiseWrapped<T> = {
@@ -12,25 +14,32 @@ type PromiseWrapped<T> = {
 
 const load_config = async function() {
     const calculate_config = async()=>{
-        console.log("CALCULATING CONFIG",new Date());
-        const file_config = await read_yaml(CONFIG_FN) as CONFIG;
+        const output = {};
         const env_config = {};
-        return Object.assign({}, env_config, file_config);
+        Object.assign(output, env_config);
+        try {
+            const file_config = await read_yaml(CONFIG_FN) as CONFIG;
+            Object.assign(output, file_config);
+        } catch(ex) {
+        }
+        return output as unknown as CONFIG;
     }
 
-    if(typeof this.is_pending===undefined) {
-        this.is_pending = null;
-        this.result = null;
-    }
+    return calculate_config();
 
-    if(this.is_pending!==null) {
-        return this.is_pending;
-    } else {
-        this.is_pending = calculate_config();
-        const result = await this.is_pending;
-        this.is_pending = null;
-        return result;
-    }
+    // if(typeof this.is_pending===undefined) {
+    //     this.is_pending = null;
+    //     this.result = null;
+    // }
+
+    // if(this.is_pending!==null) {
+    //     return this.is_pending;
+    // } else {
+    //     this.is_pending = calculate_config();
+    //     const result = await this.is_pending;
+    //     this.is_pending = null;
+    //     return result;
+    // }
 };
 
 export default new Proxy<PromiseWrapped<CONFIG>>({}, {
