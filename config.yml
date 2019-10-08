@@ -1,2 +1,4 @@
 output_directory: www
 data_directory: data
+page_directory: pages
+port: 3000
