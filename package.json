@@ -23,16 +23,21 @@
     "marked": "^0.6.3",
     "prop-types": "^15.7.2",
     "pug": "^2.0.3",
+    "react": "^16.10.2",
+    "react-dom": "^16.10.2",
+    "react-dom-server": "0.0.5",
     "yaml": "^1.6.0"
   },
   "devDependencies": {
-    "express": "^4.17.1",
     "@types/marked": "^0.6.5",
     "@types/node": "^12.0.5",
     "@types/prop-types": "^15.7.1",
     "@types/pug": "^2.0.4",
+    "@types/react": "^16.9.5",
+    "@types/react-dom": "^16.9.1",
     "@types/yaml": "^1.0.2",
     "check-prop-types": "^1.1.2",
+    "express": "^4.17.1",
     "typescript": "^3.5.1"
   }
 }
