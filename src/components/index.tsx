@@ -16,7 +16,8 @@ export type DataBank = {
 }
 
 interface AppProps {
-    databank: DataBank
+    databank: DataBank,
+    prerender_path: string
 }
 
 export default ( props: AppProps ) => {
