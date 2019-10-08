@@ -2,15 +2,15 @@ import * as React from "react";
 import { ModeIndex, AuthorIndex } from "../models";
 
 export type DataBank = {
-    modes: {
+    modes?: {
         [author: string]: {
            [mode: string]: ModeIndex
         }
     },
-    authors: {
+    authors?: {
         [author: string]: AuthorIndex
     },
-    pages: {
+    pages?: {
         [name: string]: string
     }
 }
@@ -20,5 +20,5 @@ interface AppProps {
 }
 
 export default ( props: AppProps ) => {
-    return <strong>hello world</strong>;
+    return <strong>hello world. {JSON.stringify(props.databank)}</strong>;
 };
