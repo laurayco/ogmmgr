@@ -10,7 +10,7 @@ type DataBank = any;
 
 async function prerender_page(path: string, databank: DataBank) {
     const dom_replacement = renderToString(React.createElement(Application, { databank }));
-    
+
 }
 
 async function render_mode(author: string, mode: string) {
