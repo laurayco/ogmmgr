@@ -21,6 +21,7 @@
   "author": "Lauren Connors",
   "license": "ISC",
   "dependencies": {
+    "@material-ui/core": "^4.5.0",
     "marked": "^0.6.3",
     "prop-types": "^15.7.2",
     "pug": "^2.0.3",
