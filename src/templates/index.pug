@@ -6,7 +6,11 @@ html(lang="en")
         meta(http-equiv="X-UA-Compatible", content="ie=edge")
         title= name
         block scripts
+        each script_url in scripts
+            script(type="text/javascript",src=script_url) 
         block styles
+        each style_url in styles
+            link(rel="stylesheet",href=style_url)
     body
         block body
             div#root!= content
