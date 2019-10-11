@@ -9,4 +9,6 @@ html(lang="en")
         block styles
     body
         block body
-            div!= content
+            div#root!= content
+            script.
+                app.default(!{databank});

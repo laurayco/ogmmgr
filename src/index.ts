@@ -39,7 +39,11 @@ async function prerender_page(path: string, databank: DataBank) {
     const dirname = parse(fn).dir;
     await ensure_directory(dirname);
     const html_output = compile_html_page({
-        content
+        content,
+        databank,
+        scripts: [
+            "/static/js/app-bundle.js"
+        ]
     })
     await promisify(writeFile)(fn, html_output);
 }
