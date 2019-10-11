@@ -27,6 +27,7 @@
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
     "react-dom-server": "0.0.5",
+    "react-router-dom": "^5.1.2",
     "yaml": "^1.6.0"
   },
   "devDependencies": {
