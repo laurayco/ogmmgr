@@ -45,7 +45,8 @@ async function prerender_page(path: string, databank: DataBank) {
             "/static/js/app-bundle.js"
         ],
         styles: [
-            "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+            "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap",
+            "https://fonts.googleapis.com/icon?family=Material+Icons"
         ]
     })
     await promisify(writeFile)(fn, html_output);
