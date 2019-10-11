@@ -11,4 +11,4 @@ html(lang="en")
         block body
             div#root!= content
             script.
-                app.default(!{databank});
+                app.default(!{JSON.stringify(databank)});
