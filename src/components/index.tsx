@@ -1,5 +1,12 @@
 import * as React from "react";
+import {
+    BrowserRouter,
+    StaticRouter
+} from "react-router-dom";
+
 import { ModeIndex, AuthorIndex } from "../models";
+import UX from "./ux";
+import DataBank from "../contexts/databank";
 
 export type DataBank = {
     modes?: {
@@ -21,5 +28,17 @@ interface AppProps {
 }
 
 export default ( props: AppProps ) => {
-    return <strong>hello world. {JSON.stringify(props.databank)}</strong>;
+    const rest = <DataBank.Provider value={props.databank}>
+        <UX />
+    </DataBank.Provider>;
+
+    if(props.prerender_path) {
+        return <StaticRouter location={props.prerender_path}>
+            {rest}
+        </StaticRouter>;
+    } else {
+        return <BrowserRouter>
+            {rest}
+        </BrowserRouter>;
+    }
 };
