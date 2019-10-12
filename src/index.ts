@@ -84,7 +84,7 @@ async function render_page(page: string) {
         pages: {
             [page_name]: page_contents
         }
-    });
+    }, page_contents);
 }
 
 async function render_redirect(page: string) {
