@@ -11,5 +11,16 @@ module.exports = {
         path: resolve("www/static/js"),
         library: '[name]',
         libraryTarget: 'var'
+    },
+    module: {
+        rules: [
+            {
+                test: /\.css$/i,
+                use: [
+                    'style-loader',
+                    'css-loader'
+                ]
+            }
+        ]
     }
 };
