@@ -6,7 +6,7 @@ const get_page_key = (page: string)=>{
     if(page===null) return page;
 
     if(page.endsWith(".html")) {
-        return page.slice(0, page.length - page.lastIndexOf(".html") - 1);
+        return page.slice(0, page.length - ".html".length);
     }
     return page;
 };
@@ -31,10 +31,12 @@ const usePage = (page: string) => {
     const [ page_data, set_page_data] = useState(ctxpages[key]);
 
     useEffect(()=>{
-        if(typeof page_data!=="string" && key!==null) {
+        if(key===null) return;
+
+        if(typeof page_data!=="string") {
             load_page_key(key).then(pd=>set_page_data(pd));
         }
-    }, [page_data]);
+    }, [key]);
     return page_data;
 };
 
