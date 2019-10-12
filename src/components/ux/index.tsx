@@ -6,6 +6,10 @@ import { makeStyles } from "@material-ui/core/styles";
 import Footer from "./footer";
 import Header from "./header";
 
+import PageView from "../views/page";
+import AuthorView from "../views/author";
+import ModeView from "../views/mode";
+
 interface Props {
 
 };
@@ -33,16 +37,10 @@ export default (props: Props)=>{
         <Grid item className="header">
             <Header />
         </Grid>
-        <Grid item xs className={`body `}>
-            <Route path="/p/:page">
-                <p>PAGE</p>
-            </Route>
-            <Route exact path="/a/:author">
-                <p>AUTHOR</p>
-            </Route>
-            <Route path="/a/:author/m/:mode">
-                <p>MODE</p>
-            </Route>
+        <Grid item xs>
+            <PageView />
+            <AuthorView />
+            <ModeView />
         </Grid>
         <Grid item className="footer">
             <Footer />
