@@ -7,9 +7,9 @@ import { compileFile } from "pug";
 import * as React from "react";
 
 import {} from "./models";
-import load_author from "./data/author";
-import load_mode from "./data/mode";
-import { read_directory, read_text_file } from "./data/utils";
+import load_author from "./repo-data/author";
+import load_mode from "./repo-data/mode";
+import { read_directory, read_text_file } from "./repo-data/utils";
 import config from "./config";
 import Application, { DataBank } from "./components";
 

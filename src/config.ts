@@ -1,4 +1,4 @@
-import { read_yaml } from "./data/utils";
+import { read_yaml } from "./repo-data/utils";
 
 const CONFIG_FN = process.env["CONFIG_FILE"] || "config.yml";
 
