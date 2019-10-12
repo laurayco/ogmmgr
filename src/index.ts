@@ -36,6 +36,7 @@ async function path_to_fn(path: string, extension: string) {
 async function prerender_page(path: string, databank: DataBank) {
     const content = renderToString(React.createElement(Application, { databank, prerender_path: path }));
     const fn = await path_to_fn(path,"html");
+    const data_fn = await path_to_fn(path,"json");
     const dirname = parse(fn).dir;
     await ensure_directory(dirname);
     const html_output = compile_html_page({
@@ -49,7 +50,10 @@ async function prerender_page(path: string, databank: DataBank) {
             "https://fonts.googleapis.com/icon?family=Material+Icons"
         ]
     })
-    await promisify(writeFile)(fn, html_output);
+    await Promise.all([
+        promisify(writeFile)(fn, html_output),
+        promisify(writeFile)(data_fn, JSON.stringify(databank))
+    ]);
 }
 
 async function render_mode(author: string, mode: string) {
