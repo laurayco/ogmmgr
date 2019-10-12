@@ -33,7 +33,7 @@ async function path_to_fn(path: string, extension: string) {
     return `${output_directory}/${path}.${extension}`;
 }
 
-async function prerender_page(path: string, databank: DataBank) {
+async function prerender_page(path: string, databank: DataBank, data?: any) {
     const content = renderToString(React.createElement(Application, { databank, prerender_path: path }));
     const fn = await path_to_fn(path,"html");
     const data_fn = await path_to_fn(path,"json");
@@ -52,7 +52,7 @@ async function prerender_page(path: string, databank: DataBank) {
     })
     await Promise.all([
         promisify(writeFile)(fn, html_output),
-        promisify(writeFile)(data_fn, JSON.stringify(databank))
+        promisify(writeFile)(data_fn, JSON.stringify(data || databank))
     ]);
 }
 
