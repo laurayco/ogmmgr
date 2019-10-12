@@ -55,7 +55,7 @@ async function prerender_page(path: string, databank: DataBank, data?: any) {
         content,
         databank,
         scripts: [
-            "/static/js/app-bundle.js",
+            `${base_url}/static/js/app-bundle.js`,
             REACT_EXT_URL,
             REACT_DOM_EXT_URL
         ],
