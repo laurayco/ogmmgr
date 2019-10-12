@@ -1,5 +1,6 @@
 const { resolve } = require('path');
 const mode = process.env.NODE_ENV || "development";
+const is_dev = mode==="development";
 
 module.exports = {
     mode,
@@ -37,5 +38,13 @@ module.exports = {
             '.jsx.',
             '.js'
         ]
+    },
+    externals: {
+        "react": "React",
+        "react-dom": "ReactDOM"
+    },
+    mode: is_dev ? "development" : "production",
+    optimization: {
+        usedExports: !is_dev
     }
 };

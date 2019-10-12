@@ -1,7 +1,6 @@
 import { promisify } from "util";
 import { writeFile, mkdir } from "fs";
 import { parse, join } from "path";
-
 import { renderToString } from "react-dom/server";
 import { compileFile } from "pug";
 import * as React from "react";
@@ -12,6 +11,17 @@ import load_mode from "./repo-data/mode";
 import { read_directory, read_text_file } from "./repo-data/utils";
 import config from "./config";
 import Application, { DataBank } from "./components";
+
+const env = process.env.NODE_ENV || 'development';
+const is_dev = env === "development";
+
+const REACT_EXT_URL = is_dev ?
+    "https://unpkg.com/react@16/umd/react.development.js" :
+    "https://unpkg.com/react@16/umd/react.production.min.js";
+
+const REACT_DOM_EXT_URL = is_dev ?
+    "https://unpkg.com/react-dom@16/umd/react-dom.development.js" :
+    "https://unpkg.com/react-dom@16/umd/react-dom.production.min.js";
 
 const compile_html_page = compileFile(join(__dirname,"templates/index.pug"));
 
@@ -38,12 +48,15 @@ async function prerender_page(path: string, databank: DataBank, data?: any) {
     const fn = await path_to_fn(path,"html");
     const data_fn = await path_to_fn(path,"json");
     const dirname = parse(fn).dir;
+
     await ensure_directory(dirname);
     const html_output = compile_html_page({
         content,
         databank,
         scripts: [
-            "/static/js/app-bundle.js"
+            "/static/js/app-bundle.js",
+            REACT_EXT_URL,
+            REACT_DOM_EXT_URL
         ],
         styles: [
             "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap",
@@ -84,7 +97,7 @@ async function render_page(page: string) {
         pages: {
             [page_name]: page_contents
         }
-    });
+    }, page_contents);
 }
 
 async function render_redirect(page: string) {
