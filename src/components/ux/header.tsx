@@ -1,6 +1,5 @@
 import * as React from "react";
-import { AppBar, Toolbar, Typography, IconButton } from "@material-ui/core"
-import { Menu } from "@material-ui/icons"
+import { AppBar, Toolbar, Typography, IconButton, Icon } from "@material-ui/core"
 
 interface Props {
     
@@ -10,7 +9,7 @@ const Header = (props: Props)=>{
     return <AppBar position="static">
         <Toolbar>
             <IconButton color="inherit">
-                <Menu />
+                <Icon>menu</Icon>
             </IconButton>
             <Typography variant="h6">
                 Overwatch Game Mode Manager
