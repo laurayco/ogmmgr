@@ -1,7 +1,9 @@
 import * as React from "react";
 import {
     BrowserRouter,
-    StaticRouter
+    StaticRouter,
+    Route,
+    Redirect
 } from "react-router-dom";
 
 import { ModeIndex, AuthorIndex } from "../models";
@@ -29,6 +31,12 @@ interface AppProps {
 
 export default ( props: AppProps ) => {
     const rest = <DataBank.Provider value={props.databank}>
+        <Route exact path="/">
+            <Redirect to="/p/home.html" />
+        </Route>
+        <Route exact path="/index.html">
+            <Redirect to="/p/home.html" />
+        </Route>
         <UX />
     </DataBank.Provider>;
 
