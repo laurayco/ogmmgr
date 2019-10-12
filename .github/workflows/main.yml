@@ -20,12 +20,14 @@ jobs:
         name: run build script
         env:
           NODE_ENV: production
+          base_url: /ogmmgr
       - run: npm test
         name: run tests
       - run: npm start
         name: run program
         env:
           NODE_ENV: production
+          base_url: /ogmmgr
       - name: deploy output
         uses: peaceiris/actions-gh-pages@v2.4.0
         env:
