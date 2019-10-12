@@ -87,9 +87,14 @@ async function render_page(page: string) {
     });
 }
 
+async function render_redirect(page: string) {
+    return prerender_page(page, {});
+}
+
 async function main() {
     const DATA_DIRECTORY = await config.data_directory;
     const PAGE_DIRECTORY = await config.page_directory;
+    const list_of_redirects = await config.redirects;
     const list_of_author_names = await read_directory(DATA_DIRECTORY,{
         withFileTypes: true,
     });
@@ -100,6 +105,8 @@ async function main() {
         withFileTypes: true
     });
     await Promise.all(list_of_pages.filter(fn=>fn.isFile()).map(fn=>render_page(fn.name)));
+    // render re-directs
+    await Promise.all(list_of_redirects.map(render_redirect));
 }
 
 main();
