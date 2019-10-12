@@ -1,5 +1,6 @@
 import * as React from "react";
-import { Route, useRouteMatch } from "react-router-dom";
+import { useRouteMatch } from "react-router-dom";
+import * as marked from "marked";
 
 import usePage from "../../effects/data/page";
 
@@ -19,7 +20,12 @@ const PageView = (props: Props)=>{
     const page = usePage(page_ref);
 
     if(match) {
-        return <span>{page}</span>;
+        if(page) {
+            const output = marked(page, {});
+            return <div dangerouslySetInnerHTML={{__html:output}} />;
+        } else {
+            return <div>loading...</div>
+        }
     } else {
         return null;
     }
