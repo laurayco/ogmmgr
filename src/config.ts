@@ -7,6 +7,7 @@ interface CONFIG {
     output_directory: string;
     page_directory: string;
     port: number;
+    redirects: string[];
 };
 
 type PromiseWrapped<T> = {
