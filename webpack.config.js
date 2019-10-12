@@ -1,3 +1,4 @@
+const webpack = require("webpack");
 const { resolve } = require('path');
 const mode = process.env.NODE_ENV || "development";
 const is_dev = mode==="development";
@@ -46,5 +47,8 @@ module.exports = {
     mode: is_dev ? "development" : "production",
     optimization: {
         usedExports: !is_dev
-    }
+    },
+    plugins: [
+        new webpack.EnvironmentPlugin(["NODE_ENV","base_url"])
+    ]
 };

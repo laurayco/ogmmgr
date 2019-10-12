@@ -1,12 +1,14 @@
 import * as React from "react";
 import { Route } from "react-router-dom";
+import useBaseUrl from "../../effects/base-url";
 
 interface Props {
 
 };
 
 const AuthorView = (props: Props)=>{
-    return <Route exact path="/a/:author">
+    const BASE_URL = useBaseUrl();
+    return <Route exact path={`${BASE_URL}/a/:author`}>
         Viewing an author!
     </Route>
 };

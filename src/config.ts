@@ -8,6 +8,7 @@ interface CONFIG {
     page_directory: string;
     port: number;
     redirects: string[];
+    base_url: string;
 };
 
 type PromiseWrapped<T> = {
@@ -18,6 +19,22 @@ const load_config = async function() {
     const calculate_config = async()=>{
         const output = {};
         const env_config = {};
+        const keys : (keyof CONFIG)[] = [
+            "data_directory",
+            "page_directory",
+            "output_directory",
+            "port",
+            "base_url"
+        ];
+        for(let key of keys) {
+            env_config[key] = process.env[key] || null;
+        }
+        if(env_config["base_url"]===null) {
+            env_config["base_url"] = "";
+        }
+        if(env_config["port"]!==null) {
+            env_config["port"] = parseInt(env_config["port"]);
+        }
         Object.assign(output, env_config);
         try {
             const file_config = await read_yaml(CONFIG_FN) as CONFIG;

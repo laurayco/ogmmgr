@@ -2,6 +2,7 @@ import * as React from "react";
 import { useRouteMatch } from "react-router-dom";
 import * as marked from "marked";
 
+import useBaseUrl from "../../effects/base-url";
 import usePage from "../../effects/data/page";
 
 interface Props {
@@ -9,10 +10,11 @@ interface Props {
 };
 
 const PageView = (props: Props)=>{
+    const BASE_URL = useBaseUrl();
     const match = useRouteMatch<{
         page: string
     }>({
-        path: `/p/:page`,
+        path: `${BASE_URL}/p/:page`,
         exact: true
     });
 

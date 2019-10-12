@@ -44,9 +44,10 @@ async function path_to_fn(path: string, extension: string) {
 }
 
 async function prerender_page(path: string, databank: DataBank, data?: any) {
-    const content = renderToString(React.createElement(Application, { databank, prerender_path: path }));
     const fn = await path_to_fn(path,"html");
     const data_fn = await path_to_fn(path,"json");
+    const base_url = await config.base_url;
+    const content = renderToString(React.createElement(Application, { databank, prerender_path: path, base_url }));
     const dirname = parse(fn).dir;
 
     await ensure_directory(dirname);
