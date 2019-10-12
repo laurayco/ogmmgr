@@ -1,214 +1,112 @@
-// nodejs imports
-import * as path from "path";
-
-// npm imports
-import * as yaml from "yaml";
-import * as pug from "pug";
-
-// project-local imports
-import models, {
-    ModeEntry,
-    ModeIndex,
-    AuthorInfo,
-    PropTypes as ModelPropTypes
-} from "./models";
-
-import * as CONSTS from "./consts.json";
-import * as utils from "./utils";
 import { promisify } from "util";
-import { mkdir } from "fs";
+import { writeFile, mkdir } from "fs";
+import { parse, join } from "path";
 
-/*
-    this file is the entry point to build the website.
-*/
+import { renderToString } from "react-dom/server";
+import { compileFile } from "pug";
+import * as React from "react";
 
-interface ModeData {
-    filename: string;
-    index: ModeIndex;
-}
+import {} from "./models";
+import load_author from "./repo-data/author";
+import load_mode from "./repo-data/mode";
+import { read_directory, read_text_file } from "./repo-data/utils";
+import config from "./config";
+import Application, { DataBank } from "./components";
 
-interface UserMeta {
-    author: AuthorInfo;
-    game_modes: ModeIndex[];
-}
+const compile_html_page = compileFile(join(__dirname,"templates/index.pug"));
 
-async function build_hinted_mode(
-    root_dir: string,
-    contributor_dir: string,
-    mode_dir: string
-) :
-Promise<ModeData> {
-
-    const mode_index_filename = path.parse(path.join(
-        root_dir,
-        contributor_dir,
-        mode_dir,
-        CONSTS.MODE_INDEX_FILENAME
-    ));
-
-    const returned_value : ModeData = {
-        filename: path.format(mode_index_filename),
-        index: {
-            author: {
-                contributor: contributor_dir
-            },
-            name: mode_dir,
-            description: CONSTS.DEFAULT_DESCRIPTION_FILENAME,
-            history: []
-        }
-    };
-
-    // create index container.
-    const does_file_exist = await utils.fileExists(returned_value.filename);
-    if(does_file_exist) {
-        // an existing entry already exists.
-        // in this case we only update the
-        // necessary information (do not
-        // overwrite constant data. )
-        const file_contents = await utils.readFile(returned_value.filename);
-        try {
-            const file_value = yaml.parse(file_contents.toString('utf8'));
-            if(!Array.isArray(file_value)&&typeof file_value==="object") {
-                // we know it's an object and not an array
-                // (ie: not a number, null, or string value)
-                Object.assign(returned_value.index, file_value);
-            } else {
-                console.warn(`Invalid value for ${returned_value.filename}:`, file_value);
-            }
-        } catch (ex) {
-            console.warn(`Error parsing YAML for ${returned_value.filename}:`,ex);
-        }
-    }
-
-    const ignored_files = ["index.yml", "description.md"];
-    const ignored_extensions = [".yml", ".md"];
-    // build entries from files in directory.
-    // filename should be: <GAME CODE>.owgm
-    const mode_files = (await utils.directory_files(path.join(root_dir,contributor_dir,mode_dir))).map(fname=>{
-        return path.parse(path.join(root_dir, contributor_dir, mode_dir,fname));
-    }).filter(fname=>!(ignored_files.includes(fname.base)||ignored_extensions.includes(fname.ext)));
-
-    returned_value.index.history = await Promise.all(mode_files.map(async fname=>{
-        const share_code = fname.name;
-        const stat = await utils.fileStat(path.format(fname));
-        const published = stat.ctime;
-        return {
-            share_code,
-            published: published.toUTCString()
-        };
-    }));
-
-    returned_value.index.history.sort((a,b)=>{
-        const adate = new Date(a.published);
-        const bdate = new Date(b.published);
-        if(adate>bdate) {
-            return 1;
-        } if(bdate>adate) {
-            return -1;
-        } {
-            return 0;
-        }
-    });
-
-    // write the new index to the file.
-    await utils.writeFile(returned_value.filename, yaml.stringify(returned_value.index));
-
-    return returned_value;
-}
-
-async function get_game_modes(
-    root_dir: string
-):
-Promise<ModeData[]> {
-    const contributor_dirs = await utils.sub_directories(root_dir);
-
-    const contributor_entries = await Promise.all(
-        contributor_dirs.map(async contributor=>{
-            const mode_dirs = await utils.sub_directories(path.join(
-                root_dir,
-                contributor
-            ));
-            return Promise.all(mode_dirs.map(mdir=>build_hinted_mode(
-                root_dir,
-                contributor,
-                mdir
-            )));
-        })
-    );
-    
-    return utils.flatten(contributor_entries);
-}
-
-const page_template = pug.compileFile(utils.actual_filename("./src/templates/page.pug"));
-const infer_human_name = (content: string)=>content.
-    replace(/[_ ]+/g," ").
-    split(" ").
-    map(chunk=>`${chunk.slice(0,1).toLocaleUpperCase()}${chunk.slice(1).toLocaleLowerCase()}`).
-    join(" ");
-
-async function render_page_file(filename: string) {
-    const page_source_name = path.parse(filename);
-    const page_name = infer_human_name(page_source_name.name);
-    const file_contents = await utils.readFile(path.join(utils.actual_filename("./src/pages"),filename));
-    const markdown_result = await utils.marked(file_contents.toString('utf-8'), CONSTS.MARKDOWN_OPTIONS);
-    const html_filename = `${page_source_name.name}.html`;
-    const html_content = page_template({
-        name: page_name,
-        content: markdown_result,
-        path: `/page/${html_filename}`,
-        root_url: CONSTS.ROOT_URL
-    });
+async function ensure_directory(dirname: string) {
     try {
-        await promisify(mkdir)(path.join(utils.actual_filename(CONSTS.HTML_OUTPUT_DIRECTORY),"page"));
-    } catch(ex) {
-        // who cares?
-    }
-    await utils.writeFile(path.join(utils.actual_filename(CONSTS.HTML_OUTPUT_DIRECTORY),"page",html_filename), html_content);
-}
-
-async function render_static_pages() {
-    const page_files = await utils.directory_files(utils.actual_filename("./src/pages"));
-    await Promise.all(page_files.map(render_page_file));
-    const index_content = await utils.marked(
-        (await utils.readFile(
-            path.join(utils.actual_filename("./src/pages/home.md"))
-        )).toString('utf-8'),
-        CONSTS.MARKDOWN_OPTIONS
-    );
-    const index_html = page_template({
-        name: "Home",
-        content: index_content,
-        path: `/`,
-        root_url: CONSTS.ROOT_URL
-    });
-    await utils.writeFile(path.join(utils.actual_filename(CONSTS.HTML_OUTPUT_DIRECTORY),"index.html"), index_html);
-}
-
-async function render_user_pages(modes: ModeData[]) {
-
-}
-
-async function render_mode_pages(modes: ModeData[]) {
-
-}
-
-async function entry_point() {
-    const root_dir = utils.actual_filename(CONSTS.ROOT_DIRECTORY);
-    const mode_data = await get_game_modes(root_dir);
-
-    try {
-        await promisify(mkdir)(CONSTS.HTML_OUTPUT_DIRECTORY, {
+        await promisify(mkdir)(dirname, {
             recursive: true
-        })
+        });
     } catch(ex) {
-        // ignore - this just means directory already exists.
+        // ignore
+        console.error("ERROR CREATING DIRECTORY", ex);
     }
+}
 
-    return Promise.all([
-        render_static_pages(),
-        render_user_pages(mode_data),
-        render_mode_pages(mode_data)
+async function path_to_fn(path: string, extension: string) {
+    path = path.replace(/^\/+/,""); //remove leading /'s
+    path = path.replace(/\/+$/,""); //remove trailing /'s
+    const output_directory = await config.output_directory;
+    return `${output_directory}/${path}.${extension}`;
+}
+
+async function prerender_page(path: string, databank: DataBank, data?: any) {
+    const content = renderToString(React.createElement(Application, { databank, prerender_path: path }));
+    const fn = await path_to_fn(path,"html");
+    const data_fn = await path_to_fn(path,"json");
+    const dirname = parse(fn).dir;
+    await ensure_directory(dirname);
+    const html_output = compile_html_page({
+        content,
+        databank,
+        scripts: [
+            "/static/js/app-bundle.js"
+        ],
+        styles: [
+            "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap",
+            "https://fonts.googleapis.com/icon?family=Material+Icons"
+        ]
+    })
+    await Promise.all([
+        promisify(writeFile)(fn, html_output),
+        promisify(writeFile)(data_fn, JSON.stringify(data || databank))
     ]);
 }
 
-entry_point();
+async function render_mode(author: string, mode: string) {
+    const mode_index = await load_mode(author, mode);
+    prerender_page(`/a/${author}/m/${mode}`, {
+        modes: {
+            [author]: {
+                [mode]: mode_index
+            }
+        }
+    })
+}
+
+async function render_author(author: string) {
+    // get data
+    const author_index = await load_author(author);
+    // save data to output
+    // render each mode.
+    await Promise.all(author_index.modes.map(mn=>render_mode(author, mn)));
+}
+
+async function render_page(page: string) {
+    const PAGE_DIRECTORY = await config.page_directory;
+    const page_fn = join(PAGE_DIRECTORY, page);
+    const page_name = parse(page).name;
+    const page_contents = await read_text_file(page_fn);
+    await prerender_page(`/p/${page_name}`,{
+        pages: {
+            [page_name]: page_contents
+        }
+    });
+}
+
+async function render_redirect(page: string) {
+    return prerender_page(page, {});
+}
+
+async function main() {
+    const DATA_DIRECTORY = await config.data_directory;
+    const PAGE_DIRECTORY = await config.page_directory;
+    const list_of_redirects = await config.redirects;
+    const list_of_author_names = await read_directory(DATA_DIRECTORY,{
+        withFileTypes: true,
+    });
+    // render each author.
+    await Promise.all(list_of_author_names.filter(fn=>fn.isDirectory()).map(fn=>render_author(fn.name)));
+    // render each page
+    const list_of_pages = await read_directory(PAGE_DIRECTORY, {
+        withFileTypes: true
+    });
+    await Promise.all(list_of_pages.filter(fn=>fn.isFile()).map(fn=>render_page(fn.name)));
+    // render re-directs
+    await Promise.all(list_of_redirects.map(render_redirect));
+}
+
+main();
