@@ -1,17 +1,19 @@
 import * as React from "react";
 import { useRouteMatch } from "react-router-dom";
 import useMode from "../../effects/data/mode";
+import useBaseUrl from "../../effects/base-url";
 
 interface Props {
 
 };
 
 const ModeView = (props: Props)=>{
+    const BASE_URL = useBaseUrl();
     const match = useRouteMatch<{
         author: string,
         mode: string
     }>({
-        path: `/a/:author/m/:mode`,
+        path: `${BASE_URL}/a/:author/m/:mode`,
         exact: true
     });
 
