@@ -18,10 +18,14 @@ jobs:
         name: install dependencies
       - run: npm run build
         name: run build script
+        env:
+          NODE_ENV: production
       - run: npm test
         name: run tests
       - run: npm start
         name: run program
+        env:
+          NODE_ENV: production
       - name: deploy output
         uses: peaceiris/actions-gh-pages@v2.4.0
         env:
