@@ -9,6 +9,7 @@ import {
 import { ModeIndex, AuthorIndex } from "../models";
 import UX from "./ux";
 import DataBank from "../contexts/databank";
+import useBaseUrl from "../effects/base-url";
 
 export type DataBank = {
     modes?: {
@@ -30,12 +31,13 @@ interface AppProps {
 }
 
 export default ( props: AppProps ) => {
+    const BASE_URL = useBaseUrl();
     const rest = <DataBank.Provider value={props.databank}>
-        <Route exact path="/">
-            <Redirect to="/p/home.html" />
+        <Route exact path={`${BASE_URL}/`}>
+            <Redirect to={`${BASE_URL}/p/home.html`} />
         </Route>
-        <Route exact path="/index.html">
-            <Redirect to="/p/home.html" />
+        <Route exact path={`${BASE_URL}/index.html`}>
+            <Redirect to={`${BASE_URL}/p/home.html`} />
         </Route>
         <UX />
     </DataBank.Provider>;
