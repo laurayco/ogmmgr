@@ -55,9 +55,9 @@ async function prerender_page(path: string, databank: DataBank, data?: any) {
         content,
         databank,
         scripts: [
-            `${base_url}/static/js/app-bundle.js`,
             REACT_EXT_URL,
-            REACT_DOM_EXT_URL
+            REACT_DOM_EXT_URL,
+            `${base_url}/static/js/app-bundle.js`
         ],
         styles: [
             "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap",
