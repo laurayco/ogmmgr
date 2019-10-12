@@ -30,17 +30,17 @@ const useMode = (author: string, mode: string) => {
     
     const stored_authors = Object.assign({},dbctx.modes);
     const stored_modes = Object.assign({}, stored_authors[author]);
-    const stored_mode = stored_modes[mode];
+    const stored_mode = stored_modes[mode_key];
 
     const [ mode_data, set_mode_data] = useState(stored_mode);
 
     useEffect(()=>{
-        if(author===null||mode===null) return;
+        if(author===null||mode_key===null) return;
 
         if(typeof mode_data!=="object" || mode_data === undefined) {
             load_mode_key(author, mode_key).then(pd=>set_mode_data(pd));
         }
-    }, [author,mode]);
+    }, [author,mode_key]);
     return mode_data;
 };
 
